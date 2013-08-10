@@ -1,3 +1,6 @@
+// Copyright (c) 2013 Mathieu Turcotte
+// Licensed under the MIT license.
+
 // This packages implement functions to read the source map format described
 // in the "Source Map Revision 3 Proposal" available at http://goo.gl/bcVlcK
 package sourcemap
