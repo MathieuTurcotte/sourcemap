@@ -1,0 +1,206 @@
+{
+  "Version": 3,
+  "File": "example.js",
+  "SourceRoot": "",
+  "Sources": [
+    "example.coffee"
+  ],
+  "SourcesContent": null,
+  "Names": [
+    "number",
+    "opposite",
+    "square",
+    "list",
+    "math",
+    "race",
+    "cubes"
+  ],
+  "Mappings": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 1,
+        "SourceColumn": 0,
+        "NameId": 0
+      }
+    ],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 2,
+        "SourceColumn": 0,
+        "NameId": 1
+      }
+    ],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 5,
+        "SourceColumn": 0,
+        "NameId": -1
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 5,
+        "SourceColumn": 0,
+        "NameId": -1
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 8,
+        "SourceColumn": 0,
+        "NameId": 2
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 8,
+        "SourceColumn": 9,
+        "NameId": -1
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 11,
+        "SourceColumn": 0,
+        "NameId": 3
+      }
+    ],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 14,
+        "SourceColumn": 0,
+        "NameId": 4
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 15,
+        "SourceColumn": 2,
+        "NameId": -1
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 16,
+        "SourceColumn": 2,
+        "NameId": -1
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 17,
+        "SourceColumn": 2,
+        "NameId": -1
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 6,
+        "SourceFileId": 0,
+        "SourceLine": 17,
+        "SourceColumn": 10,
+        "NameId": -1
+      }
+    ],
+    [],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 20,
+        "SourceColumn": 0,
+        "NameId": 5
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 21,
+        "SourceColumn": 2,
+        "NameId": -1
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 24,
+        "SourceColumn": 0,
+        "NameId": -1
+      }
+    ],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 24,
+        "SourceColumn": 0,
+        "NameId": -1
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 2,
+        "SourceFileId": 0,
+        "SourceLine": 27,
+        "SourceColumn": 0,
+        "NameId": 6
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "GeneratedColumn": 4,
+        "SourceFileId": 0,
+        "SourceLine": 27,
+        "SourceColumn": 8,
+        "NameId": -1
+      }
+    ],
+    []
+  ]
+}
