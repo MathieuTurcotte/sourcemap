@@ -6,11 +6,11 @@
 package sourcemap
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 )
 
 const maxEntryValue = 5    // Maximum number of values within a single entry.
@@ -25,7 +25,7 @@ type OriginalMapping struct {
 	Name   string
 }
 
-// A struct into which the source map data is unmarshalled.
+// A struct representing the decoded source map.
 type SourceMap struct {
 	Version        int
 	File           string
@@ -33,7 +33,18 @@ type SourceMap struct {
 	Sources        []string
 	SourcesContent []string
 	Names          []string
-	Mappings       Mappings
+	Mappings       []Line
+}
+
+// A struct into which the source map JSON data is unmarshalled.
+type jsonSourceMap struct {
+	Version        int
+	File           string
+	SourceRoot     string
+	Sources        []string
+	SourcesContent []string
+	Names          []string
+	Mappings       string
 }
 
 // Given a line and a column number in the generated code, find a mapping in
@@ -44,7 +55,7 @@ func (s *SourceMap) GetSourceMapping(linum, column int) (mapping OriginalMapping
 	linum--
 	column--
 
-	if linum < 0 || linum > len(s.Mappings.Lines) {
+	if linum < 0 || linum > len(s.Mappings) {
 		err = fmt.Errorf("invalid line number: %v", linum+1)
 		return
 	}
@@ -54,7 +65,7 @@ func (s *SourceMap) GetSourceMapping(linum, column int) (mapping OriginalMapping
 		return
 	}
 
-	line := s.Mappings.Lines[linum]
+	line := s.Mappings[linum]
 
 	if len(line) == 0 || line[0].GeneratedColumn > column {
 		return s.getPreviousLineMapping(linum)
@@ -79,7 +90,7 @@ func (s *SourceMap) getPreviousLineMapping(linum int) (mapping OriginalMapping, 
 			return
 		}
 
-		line := s.Mappings.Lines[linum]
+		line := s.Mappings[linum]
 
 		if len(line) > 0 {
 			entry := line[len(line)-1]
@@ -113,12 +124,6 @@ type Entry struct {
 // containing information about the original source file.
 type Line []Entry
 
-// The parsed representation of a source map mapping. Slots in the lines slice
-// will be null if the line does not have any entries.
-type Mappings struct {
-	Lines []Line
-}
-
 // Struct to hold the state while parsing the "mappings" field.
 type unmarshalState struct {
 	gencol int // 0-based index of the generated column.
@@ -128,34 +133,33 @@ type unmarshalState struct {
 	name   int // 0-based index into the "names" list.
 }
 
-func (m *Mappings) UnmarshalJSON(data []byte) error {
-	m.Lines = make([]Line, 0, 256)
-
-	// Instead of splitting the input string into multiple
-	reader := bytes.NewReader(data)
-
+func parseMappings(data string) (lines []Line, err error) {
+	lines = make([]Line, 0, 256)
+	reader := strings.NewReader(data)
 	state := unmarshalState{}
 	line := make(Line, 0, 10)
 	for reader.Len() > 0 {
 		if consume(reader, lineSeparator) {
-			m.Lines = append(m.Lines, line)
+			lines = append(lines, line)
 			line = make(Line, 0, 10)
 			state.gencol = 0
 		} else {
 			i := 0
 			var values [maxEntryValue]int
 			for !entryCompleted(reader) {
-				if val, err := decodeVQL(reader); err != nil {
-					return err
+				if val, derr := decodeVQL(reader); derr != nil {
+					err = derr
+					return
 				} else {
 					values[i] = val
 					i++
 				}
 			}
 
-			entry, err := newEntry(&state, values, i)
-			if err != nil {
-				return err
+			entry, eerr := newEntry(&state, values, i)
+			if eerr != nil {
+				err = eerr
+				return
 			}
 
 			line = append(line, entry)
@@ -163,10 +167,10 @@ func (m *Mappings) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	return nil
+	return
 }
 
-func consume(r *bytes.Reader, wanted byte) bool {
+func consume(r *strings.Reader, wanted byte) bool {
 	if r.Len() > 0 {
 		b, _ := r.ReadByte()
 		if b == wanted {
@@ -177,7 +181,7 @@ func consume(r *bytes.Reader, wanted byte) bool {
 	return false
 }
 
-func entryCompleted(r *bytes.Reader) bool {
+func entryCompleted(r *strings.Reader) bool {
 	if r.Len() > 0 {
 		b, _ := r.ReadByte()
 		r.UnreadByte()
@@ -226,14 +230,28 @@ func newEntry(s *unmarshalState, values [maxEntryValue]int,
 
 // Reads a source map.
 func Read(reader io.Reader) (s SourceMap, err error) {
+	var jsonMap jsonSourceMap
 	dec := json.NewDecoder(reader)
-	if err = dec.Decode(&s); err != nil {
+	if err = dec.Decode(&jsonMap); err != nil {
 		return
 	}
 
-	if s.Version != 3 {
+	if jsonMap.Version != 3 {
 		err = fmt.Errorf("unsupported version: %v", s.Version)
 	}
+
+	lines, err := parseMappings(jsonMap.Mappings)
+	if err != nil {
+		return
+	}
+
+	s.Version = jsonMap.Version
+	s.File = jsonMap.File
+	s.SourceRoot = jsonMap.SourceRoot
+	s.Sources = jsonMap.Sources
+	s.SourcesContent = jsonMap.SourcesContent
+	s.Names = jsonMap.Names
+	s.Mappings = lines
 
 	return
 }
