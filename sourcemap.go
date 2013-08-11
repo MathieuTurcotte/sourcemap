@@ -12,10 +12,10 @@ import (
 
 // Represents the mapping to a line/column/name in the original file.
 type OriginalMapping struct {
-	File   string
-	Line   int
-	Column int
-	Name   string
+	File   string // The filename of the original file.
+	Line   int    // 1-based line number.
+	Column int    // 1-based column number.
+	Name   string // The symbol name, if any.
 }
 
 // Represents a section of the generated source that can be mapped back to the
