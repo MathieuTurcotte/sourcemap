@@ -24,7 +24,7 @@ type jsonSourceMap struct {
 	SourceRoot     string
 	Sources        []string
 	SourcesContent []string
-	Names          []string
+	Names          []interface{}
 	Mappings       string
 }
 
@@ -52,7 +52,15 @@ func Read(reader io.Reader) (s SourceMap, err error) {
 	s.SourceRoot = jsonMap.SourceRoot
 	s.Sources = jsonMap.Sources
 	s.SourcesContent = jsonMap.SourcesContent
-	s.Names = jsonMap.Names
+	s.Names = make([]string, len(jsonMap.Names))
+	for i, v := range jsonMap.Names {
+		switch v := v.(type) {
+		case string:
+			s.Names[i] = v
+		case int:
+			s.Names[i] = fmt.Sprintf("%d", v)
+		}
+	}
 	s.Mappings = lines
 
 	return
