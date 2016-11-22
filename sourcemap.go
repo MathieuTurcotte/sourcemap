@@ -5,10 +5,7 @@
 // in the "Source Map Revision 3 Proposal" available at http://goo.gl/bcVlcK
 package sourcemap
 
-import (
-	"fmt"
-	"sort"
-)
+import "fmt"
 
 // Represents the mapping to a line/column/name in the original file.
 type OriginalMapping struct {
@@ -67,9 +64,18 @@ func (s *SourceMap) GetSourceMapping(linum, column int) (mapping OriginalMapping
 		return s.getPreviousLineMapping(linum)
 	}
 
-	index := sort.Search(len(line), func(i int) bool {
-		return line[i].GeneratedColumn <= column
-	})
+	index := -1
+	for i, entry := range line {
+		if entry.GeneratedColumn <= column {
+			index = i
+			break
+		}
+	}
+
+	if index < 0 {
+		err = fmt.Errorf("unable to map column: %d", column+1)
+		return
+	}
 
 	entry := line[index]
 	s.populateMapping(&mapping, entry)
